@@ -14,6 +14,9 @@ resource "aws_iam_role" "test_role" {
       },
     ]
   })
+  managed_policy_arns = concat([
+    aws_iam_policy.policy.arn
+  ],var.policy_arns)
 }
 
 resource "aws_iam_policy" "policy" {
