@@ -12,5 +12,5 @@ variable "policy_statement" {
 }
 
 variable "policy_arns" {
-    type = Array(string)
+    #type = Array(string)
 }
