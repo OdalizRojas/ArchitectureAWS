@@ -1,12 +1,12 @@
 output "vpc_id" {
-    value = aws_vpc.main_vpc.id
+    value = module.upb_network.vpc_id
 }
 output "vpc_arn" {
-    value = aws_vpc.main_vpc.arn
+    value = module.upb_network.vpc_arn
 }
 output "web_A" {
-  value = aws_subnet.subnets["sn-web-A"].id
+  value = module.upb_network.web_A
 }
 output "web_B" {
-  value = aws_subnet.subnets["sn-web-B"].id
+  value = module.upb_network.web_B
 }

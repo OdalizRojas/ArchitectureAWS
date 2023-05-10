@@ -1,27 +1,36 @@
-resource "aws_security_group" "allow_tls" {
+data "aws_vpc" "default_vpc" {
+  default = true
+}
+
+resource "aws_security_group" "sg" {
   name        = var.sg_name
-  vpc_id      = var.vpc_id
+  vpc_id      = var.vpc_id == "default_vpc" ? data.aws_vpc.default_vpc.id : var.vpc_id
 
-  ingress {
-    description      = "TLS from VPC"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = [aws_vpc.main.cidr_block]
-    ipv6_cidr_blocks = [aws_vpc.main.ipv6_cidr_block]
+  dynamic ingress {
+    for_each = var.ingress_rules
+    content {
+      description      = ingress.value.description
+      from_port        = ingress.value.port
+      to_port          = ingress.value.port
+      protocol         = ingress.value.protocol
+      cidr_blocks      = ingress.value.cidr_blocks
+      security_groups = ingress.value.vpc_security_groups
+    }
   }
 
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+  dynamic egress {
+    for_each = var.egress_rules
+    content {
+      description      = egress.value.description
+      from_port        = egress.value.port
+      to_port          = egress.value.port
+      protocol         = egress.value.protocol
+      cidr_blocks      = egress.value.cidr_blocks
+      security_groups = egress.value.vpc_security_groups
+    }
   }
-  /* Como hacer foreach de las reglas de ingreso y egreso, para poder usar la conf de los modulos
-  */
 
   tags = {
-    Name = "allow_tls"
+    Name = var.sg_name
   }
 }

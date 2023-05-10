@@ -4,4 +4,10 @@ variable "sg_name" {
 
 variable "vpc_id" {
     type = string
+    default = "default_vpc"
+}
+
+variable "ingress_rules" {
+}
+variable "egress_rules" {
 }
